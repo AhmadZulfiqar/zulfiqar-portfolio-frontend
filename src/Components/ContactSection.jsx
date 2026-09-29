@@ -1,35 +1,31 @@
 import React, { useState } from "react";
 import "./ContactSection.css";
 
+const INFO = [
+  { icon: "fa-solid fa-phone", title: "Phone", value: "+92 324 9743264", href: "tel:+923249743264", sub: "Available 12 PM — 09 PM" },
+  { icon: "fa-brands fa-whatsapp", title: "WhatsApp", value: "+92 324 9743264", href: "https://wa.me/923249743264", sub: "Instant messaging & chat", ext: true },
+  { icon: "fa-brands fa-linkedin-in", title: "LinkedIn", value: "Zulfiqar Ahmad", href: "https://www.linkedin.com/in/zulfiqar-ahmad-08586b299", sub: "Professional network", ext: true },
+  { icon: "fa-regular fa-envelope", title: "Email", value: "mzulfiqarahmad1122@gmail.com", href: "mailto:mzulfiqarahmad1122@gmail.com", sub: "Send a formal inquiry" },
+];
+
+const EMPTY = { name: "", email: "", company: "", message: "", verification: "" };
+
 export default function ContactSection() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    company: "",
-    message: "",
-    verification: "",
-  });
-
-  // Strip trailing slashes so fetch never builds a double-slash URL (//api/contact)
-  // Change this line:
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "https://portfolio-backend-kohl-one.vercel.app";
-
+  const [formData, setFormData] = useState(EMPTY);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
 
-  const handleChange = (e) => {
+  const API_BASE_URL =
+    import.meta.env.VITE_API_URL || "https://portfolio-backend-kohl-one.vercel.app";
+
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Verification check
     if (formData.verification.trim() !== "0") {
-      setStatusMsg({
-        type: "error",
-        text: "Please solve the verification math problem correctly.",
-      });
+      setStatusMsg({ type: "error", text: "Please solve the verification math problem correctly." });
       return;
     }
 
@@ -39,9 +35,7 @@ export default function ContactSection() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
@@ -49,33 +43,17 @@ export default function ContactSection() {
           message: formData.message,
         }),
       });
-
       const data = await response.json();
 
       if (data.success) {
-        setStatusMsg({
-          type: "success",
-          text: "Thank you! Your message has been sent successfully.",
-        });
-        setFormData({
-          name: "",
-          email: "",
-          company: "",
-          message: "",
-          verification: "",
-        });
+        setStatusMsg({ type: "success", text: "Thank you! Your message has been sent successfully." });
+        setFormData(EMPTY);
       } else {
-        setStatusMsg({
-          type: "error",
-          text: data.message || "Something went wrong.",
-        });
+        setStatusMsg({ type: "error", text: data.message || "Something went wrong." });
       }
     } catch (err) {
       console.error("Contact Form Error:", err);
-      setStatusMsg({
-        type: "error",
-        text: "Unable to connect to the email server. Try again later.",
-      });
+      setStatusMsg({ type: "error", text: "Unable to connect to the email server. Try again later." });
     } finally {
       setLoading(false);
     }
@@ -84,201 +62,79 @@ export default function ContactSection() {
   return (
     <section id="contact" className="contact-section">
       <div className="contact-wrapper">
-        <span className="contact-badge">CONTACT</span>
         <h2 className="contact-headline">
           Let's build <span>what's next</span>
         </h2>
         <p className="contact-subheadline">
-          Share a challenge, discuss a project collaboration, or plan a
-          discovery discussion.
+          Share a challenge, discuss a collaboration, or plan a project together.
+          I usually reply within a day.
         </p>
 
         <div className="contact-container">
-          {/* LEFT COLUMN: CONTACT DETAILS */}
+          {/* LEFT: DETAILS */}
           <div className="contact-info-col">
-            <div className="info-card">
-              <div className="info-icon">
-                <i className="fa-solid fa-phone"></i>
-              </div>
-              <div className="info-content">
-                <h4 className="info-title">Phone Number</h4>
-                <a href="tel:+923249743264" className="info-value">
-                  +92 324 9743264
-                </a>
-                <span className="info-sub">Available 12 PM — 09 PM</span>
-              </div>
-            </div>
-
-            <div className="info-card">
-              <div className="info-icon">
-                <i className="fa-brands fa-linkedin-in"></i>
-              </div>
-              <div className="info-content">
-                <h4 className="info-title">LinkedIn</h4>
-                <a
-                  href="https://www.linkedin.com/in/zulfiqar-ahmad-08586b299"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="info-value"
-                >
-                  Zulfiqar Ahmad
-                </a>
-                <span className="info-sub">Professional Network</span>
-              </div>
-            </div>
-
-            <div className="info-card">
-              <div className="info-icon">
-                <i className="fa-brands fa-whatsapp"></i>
-              </div>
-              <div className="info-content">
-                <h4 className="info-title">WhatsApp</h4>
-                <a
-                  href="https://wa.me/923249743264"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="info-value"
-                >
-                  +92 324 9743264
-                </a>
-                <span className="info-sub">Instant messaging &amp; chat</span>
-              </div>
-            </div>
-
-            <div className="info-card">
-              <div className="info-icon">
-                <i className="fa-regular fa-envelope"></i>
-              </div>
-              <div className="info-content">
-                <h4 className="info-title">Email</h4>
-                <a
-                  href="mailto:mzulfiqarahmad1122@gmail.com"
-                  className="info-value"
-                >
-                  mzulfiqarahmad1122@gmail.com
-                </a>
-                <span className="info-sub">Send a formal inquiry</span>
-              </div>
-            </div>
-
-            <div className="info-card quick-actions-card">
-              <h4 className="quick-actions-title">Quick Actions</h4>
+            {INFO.map((item, i) => (
               <a
-                href="mailto:mzulfiqarahmad1122@gmail.com"
-                className="quick-btn"
+                key={item.title}
+                href={item.href}
+                className="info-card"
+                style={{ "--i": i }}
+                {...(item.ext ? { target: "_blank", rel: "noreferrer" } : {})}
               >
-                <i className="fa-regular fa-envelope"></i> Send us an email
-              </a>
-              <a href="tel:+923249743264" className="quick-btn">
-                <i className="fa-solid fa-phone"></i> Call Pakistan Office
-              </a>
-            </div>
-          </div>
-
-          {/* RIGHT COLUMN: CONTACT FORM */}
-          <div className="contact-form-col">
-            <form onSubmit={handleSubmit} className="contact-form-card">
-              {statusMsg.text && (
-                <div
-                  style={{
-                    padding: "12px",
-                    borderRadius: "8px",
-                    fontSize: "0.88rem",
-                    backgroundColor:
-                      statusMsg.type === "success"
-                        ? "rgba(34, 197, 94, 0.15)"
-                        : "rgba(239, 68, 68, 0.15)",
-                    color:
-                      statusMsg.type === "success" ? "#4ade80" : "#f87171",
-                    border: `1px solid ${
-                      statusMsg.type === "success"
-                        ? "rgba(34, 197, 94, 0.3)"
-                        : "rgba(239, 68, 68, 0.3)"
-                    }`,
-                  }}
-                >
-                  {statusMsg.text}
+                <div className="info-icon">
+                  <i className={item.icon}></i>
                 </div>
-              )}
-
-              <div className="form-group">
-                <label>
-                  Name <span className="req">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="How should we call you?"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>
-                  Email <span className="req">*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@company.com"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Company</label>
-                <input
-                  type="text"
-                  name="company"
-                  placeholder="Your company name (optional)"
-                  value={formData.company}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>
-                  Message <span className="req">*</span>
-                </label>
-                <textarea
-                  name="message"
-                  rows="4"
-                  placeholder="Tell us about your project, timeline, and any specific requirements..."
-                  required
-                  value={formData.message}
-                  onChange={handleChange}
-                ></textarea>
-              </div>
-
-              <div className="form-group">
-                <label>
-                  Human Verification: What is 9 - 9?{" "}
-                  <span className="req">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="verification"
-                  placeholder="Enter your answer"
-                  required
-                  value={formData.verification}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <button type="submit" className="submit-btn" disabled={loading}>
-                {loading ? "Sending..." : "Send message"}{" "}
-                <i className="fa-solid fa-paper-plane"></i>
-              </button>
-
-              <p className="form-footnote">
-                Your message will be sent directly to our inbox via secure SMTP.
-              </p>
-            </form>
+                <div className="info-content">
+                  <h4 className="info-title">{item.title}</h4>
+                  <span className="info-value">{item.value}</span>
+                  <span className="info-sub">{item.sub}</span>
+                </div>
+                <i className="fa-solid fa-arrow-up-right-from-square info-go"></i>
+              </a>
+            ))}
           </div>
+
+          {/* RIGHT: FORM */}
+          <form onSubmit={handleSubmit} className="contact-form-card">
+            <div className="form-row">
+              <div className="form-group">
+                <input id="c-name" type="text" name="name" placeholder=" " required value={formData.name} onChange={handleChange} />
+                <label htmlFor="c-name">Name *</label>
+              </div>
+              <div className="form-group">
+                <input id="c-email" type="email" name="email" placeholder=" " required value={formData.email} onChange={handleChange} />
+                <label htmlFor="c-email">Email *</label>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <input id="c-company" type="text" name="company" placeholder=" " value={formData.company} onChange={handleChange} />
+              <label htmlFor="c-company">Company (optional)</label>
+            </div>
+
+            <div className="form-group">
+              <textarea id="c-message" name="message" rows="4" placeholder=" " required value={formData.message} onChange={handleChange}></textarea>
+              <label htmlFor="c-message">Tell me about your project *</label>
+            </div>
+
+            <div className="form-group">
+              <input id="c-verify" type="text" name="verification" placeholder=" " required value={formData.verification} onChange={handleChange} />
+              <label htmlFor="c-verify">Human check: what is 9 − 9? *</label>
+            </div>
+
+            <div aria-live="polite">
+              {statusMsg.text && (
+                <div className={`status-msg ${statusMsg.type}`}>{statusMsg.text}</div>
+              )}
+            </div>
+
+            <button type="submit" className="submit-btn" disabled={loading}>
+              <span>{loading ? "Sending..." : "Send message"}</span>
+              <i className={`fa-solid fa-paper-plane ${loading ? "flying" : ""}`}></i>
+            </button>
+
+            <p className="form-footnote">Your message goes straight to my inbox.</p>
+          </form>
         </div>
       </div>
     </section>
